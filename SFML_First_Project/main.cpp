@@ -9,47 +9,43 @@
 using namespace std;
 
 int n = 15, m = 15; // Kích thước bàn cờ (có thể thay đổi sau này);
-char board[100][100]; // Mảng chứa bàn cờ ảo
+char** board; // Mảng chứa bàn cờ ảo
 char currentSigned = 'O'; // Kí hiệu hiện tại sẽ điền vào bảng (bắt đầu là O)
-int cellSize = 40; // Kích thước mỗi ô trong bàn cờ
+int cellSize = 70; // Kích thước mỗi ô trong bàn cờ
 unsigned int height = 15 * cellSize;
 unsigned int width = 15 * cellSize;
-pair<int, int> saveO[10007], saveX[10007];
-int slO = 0, slX = 0;
+vector<pair<int,int>> saveO, saveX;
+sf::Font font;
 
 void changeSigned() { // Hàm đổi người chơi
 	if (currentSigned == 'O') currentSigned = 'X';
 	else currentSigned = 'O';
 }
 
-void drawMove(sf::RenderWindow& window, int x, int y, char player) { // Hàm vẽ bước đi vẽ vào ô của người chơi hiện tại
-	
-	// Tạo font chữ
-	sf::Font font;
-	if (!font.openFromFile("./arial.ttf")) {
-		cout << "Error Loading Font" << "\n";
-		return;
-	}
-
+void drawMove(sf::RenderWindow& window, int x, int y, char player) {
 	if (player == 'O') {
-		char c[2] = "O";
 		sf::Text O(font);
 		O.setString("O");
-		O.setCharacterSize(30);
+		O.setCharacterSize(40);
 		O.setFillColor(sf::Color::Red);
-		float xPos = x * cellSize + 10;
-		float yPos = y * cellSize + 10;
+
+		// Tính toán vị trí trung tâm cho chữ "O"
+		float xPos = x * cellSize + cellSize / 2 - O.getLocalBounds().size.x / 2 - 2;
+		float yPos = y * cellSize + cellSize / 2 - O.getLocalBounds().size.y / 2 - 10; // trừ để căn chỉnh lại cho đẹp mắt
+
 		O.setPosition({ xPos, yPos });
 		window.draw(O);
 	}
 	else {
-		char c[2] = "X";
 		sf::Text X(font);
 		X.setString("X");
-		X.setCharacterSize(30);
+		X.setCharacterSize(40);
 		X.setFillColor(sf::Color::Blue);
-		float xPos = x * cellSize + 10;
-		float yPos = y * cellSize + 10;
+
+		// Tính toán vị trí trung tâm cho chữ "X"
+		float xPos = x * cellSize + cellSize / 2 - X.getLocalBounds().size.x / 2 - 2;
+		float yPos = y * cellSize + cellSize / 2 - X.getLocalBounds().size.y / 2 - 10; // trừ để căn chỉnh lại cho đẹp mắt
+
 		X.setPosition({ xPos, yPos });
 		window.draw(X);
 	}
@@ -140,14 +136,27 @@ void drawBoard(sf::RenderWindow& window) {
 
 int main() {
 
+	// Tạo font chữ
+	if (!font.openFromFile("./arial.ttf")) {
+		cout << "Error Loading Font" << "\n";
+		return -1;
+	}
+
 	sf::RenderWindow window(sf::VideoMode({height, width}), "Caro Board Game");
 	
 	//Setup bàn cờ ban đầu
+	board = new char* [n];
+	for (int i = 0; i < m; i++)
+		board[i] = new char [m];
+
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < m; j++)
 			board[i][j] = ' ';
 
+
 	bool isWin = false;
+	float px, py;
+
 
 	while (window.isOpen()) {
 		while (const optional event = window.pollEvent()) { // Kiểm tra có sự kiện nào xảy ra trong cửa sổ ứng dụng
@@ -156,40 +165,89 @@ int main() {
 			}
 
 			if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()){
-				if (mouseButtonPressed->button == sf::Mouse::Button::Left){ // Khi người chơi bấm chuột trái
+				if (mouseButtonPressed->button == sf::Mouse::Button::Left && !isWin){ // Khi người chơi bấm chuột trái
 					sf::Vector2i mousePos = sf::Mouse::getPosition(window); // Lấy vị trí con chuột
 					int x = mousePos.x / cellSize;
 					int y = mousePos.y / cellSize;
 
 					if (board[x][y] == ' ') { // Nếu ô đó chưa được chọn
 						board[x][y] = currentSigned;
-						if (currentSigned == 'O') saveO[slO++] = make_pair(x, y);
-						else saveX[slX++] = make_pair(x, y);
-					}
-					
-					// Kiểm tra chiến thắng
-					isWin = checkWin(x, y);
+						if (currentSigned == 'O') saveO.push_back(make_pair(x, y));
+						else saveX.push_back(make_pair(x, y));
+						// Kiểm tra chiến thắng
+						isWin = checkWin(x, y);
 
-					// Chuyển người chơi
-					changeSigned();
+						// Chuyển người chơi
+						if (!isWin) changeSigned();
+					}
 				}
 			}
-		}
+			window.clear(sf::Color::White); // Làm mới màn hình với nền trắng
 
-		window.clear(sf::Color::White); // Làm mới màn hình với nền trắng
+			drawBoard(window); // Vẽ bảng cờ caro
 
-		drawBoard(window); // Vẽ bảng cờ caro
+			for (auto O : saveO) drawMove(window, O.first, O.second, 'O');
 
-		for (int i = 0; i < slO; i++) drawMove(window, saveO[i].first, saveO[i].second, 'O');
+			for (auto X : saveX) drawMove(window, X.first, X.second, 'X');
 
-		for (int i = 0; i < slX; i++) drawMove(window, saveX[i].first, saveX[i].second, 'X');
+			if (isWin) {
+				// Tạo hộp thoại thông báo chiến thắng
+				sf::RectangleShape popup(sf::Vector2f(500, 150));
+				px = (window.getSize().x - popup.getSize().x) / 2;
+				py = (window.getSize().y - popup.getSize().y) / 2;
+				popup.setPosition({ px, py });
+				popup.setFillColor(sf::Color::Blue);
 
-		window.display();
+				sf::Text popupText(font);
+				string winMessage = "Congratulation player ";
+				winMessage += currentSigned;
+				winMessage += " on winning!";
+				popupText.setString(winMessage);
+				popupText.setCharacterSize(24);
+				px = popup.getPosition().x + (popup.getSize().x - popupText.getLocalBounds().size.x) / 2;
+				py = popup.getPosition().y + (popup.getSize().y - popupText.getLocalBounds().size.y) / 5;
+				popupText.setPosition({ px, py });
+				popupText.setFillColor(sf::Color::White);
 
-		if (isWin) {
-			changeSigned();
-			cout << "Cogratulation Player " << currentSigned << " for winning!";
-			window.close();
+				// Tạo nút "OK"
+				sf::RectangleShape okButton(sf::Vector2f(100, 50));
+				px = popup.getPosition().x + (popup.getSize().x - okButton.getSize().x) / 2;
+				py = popup.getPosition().y + (popup.getSize().y - okButton.getSize().y) * 4 / 5;
+				okButton.setPosition({ px, py });
+				okButton.setFillColor(sf::Color::Green);
+
+				sf::Text okText(font);
+				okText.setString("Clear");
+				okText.setCharacterSize(20);
+				px = okButton.getPosition().x + (okButton.getSize().x - okText.getLocalBounds().size.x) / 2;
+				py = okButton.getPosition().y + (okButton.getSize().y - okText.getLocalBounds().size.y) / 2;
+				okText.setPosition({ px, py });
+				okText.setFillColor(sf::Color::White);
+
+				bool showPopup = true;
+
+				if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+					if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+						sf::Vector2f mousePos(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
+						if (okButton.getGlobalBounds().contains(mousePos)) {
+							showPopup = false;
+							isWin = false;
+						}
+					}
+				}
+
+				if (showPopup) {
+					window.draw(popup);
+					window.draw(popupText);
+					window.draw(okButton);
+					window.draw(okText);
+				}
+
+				saveO.clear();
+				saveX.clear();
+			}
+
+			window.display();
 		}
 	}
 	return 0;
