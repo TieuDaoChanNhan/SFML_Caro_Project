@@ -7,6 +7,7 @@
   
 ### Fixed
 - Sửa một số lỗi nhỏ về giao diện và xử lý sự kiện chuột.
+- Organize lại code theo Class, Object để chương trình chạy mượt mà hơn.
 
 ## [0.1.0] - 2023-02-27
 ### Added
