@@ -44,6 +44,14 @@ public:
 			}
 		}
 	}
+
+	bool isFullBoard() {
+		bool check = true;
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+				if (board[i][j] == ' ') check = false;
+		return check;
+	}
 };
 
 #endif

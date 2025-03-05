@@ -1,33 +1,39 @@
-﻿#ifndef HUMAN_CPP
-#define HUMAN_CPP
+﻿#ifndef HUMAN_HPP
+#define HUMAN_HPP
 
 #include"Player.hpp"
-#include"UIUX.hpp"
+#include"Referee.hpp"
 #include<iostream>
 #include<vector>
+#include<SFML/Graphics.hpp>
+#include<SFML/System.hpp>
+#include<SFML/Window.hpp>
+#include<SFML/Audio.hpp>
+#include<SFML/Network.hpp>
 
 using namespace std;
 
 class Human : public Player {
-private:
-    vector<pair<int, int>> moves;
 public:
     Human(char symbol) : Player(symbol) {}
 
-    // Di chuyển của người chơi thật (sử dụng sự kiện chuột)
-    void addMove(int x, int y) {
-        moves.push_back(make_pair(x, y));
-    }
+    bool decideMove(sf::RenderWindow& window, sf::Event& event, Board& board, Referee& referee, int isWin) {
+        if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouseButtonPressed->button == sf::Mouse::Button::Left && isWin == -1) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                int x = mousePos.x / board.getCellSize();
+                int y = mousePos.y / board.getCellSize();
 
-    void drawAllMoves(UIUX uiux) {
-        for (auto p : moves) {
-            uiux.drawMove(p.first, p.second, getSymbol());
+                if (board.getCell(x, y) == ' ') {
+                    board.setCell(x, y, getSymbol());
+                    addMove(x, y);
+                    referee.checkWin(board);
+                    return true;
+                }
+            }
         }
-    }
-
-    void resetMoves() {
-        if (!moves.empty()) moves.clear();
+        return false;
     }
 };
 
-#endif // !HUMAN_CPP
+#endif // !HUMAN_HPP

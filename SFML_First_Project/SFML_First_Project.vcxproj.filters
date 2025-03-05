@@ -21,6 +21,18 @@
     <ClCompile Include="Human.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="UIUX_Begin.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIUX_Game.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIUX_Victory.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.hpp">

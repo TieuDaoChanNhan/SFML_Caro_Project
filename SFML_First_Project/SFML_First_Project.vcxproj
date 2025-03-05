@@ -137,6 +137,10 @@
   <ItemGroup>
     <ClCompile Include="Human.hpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextBox.hpp" />
+    <ClCompile Include="UIUX_Begin.hpp" />
+    <ClCompile Include="UIUX_Game.hpp" />
+    <ClCompile Include="UIUX_Victory.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.hpp" />
