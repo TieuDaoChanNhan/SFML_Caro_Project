@@ -33,4 +33,4 @@ Dự án này sử dụng các công nghệ và thư viện sau:
 
 1. Clone repository về máy:
    ```bash
-   git clone https://github.com/username/project-name.git
+   https://github.com/TieuDaoChanNhan/SFML_Caro_Project
