@@ -13,6 +13,7 @@ using namespace std;
 
 class TextBox {
 private:
+    // --- Private Members ---
     sf::Text text;
     sf::RectangleShape box;
     std::string content;
@@ -22,11 +23,9 @@ private:
     sf::Text okText;
 
 public:
+    // --- Constructor ---
     TextBox(sf::Font& font, sf::RenderWindow* window, const std::string& header)
         : selected(false), text(font), headerText(font), okText(font) {
-        //selected = true;
-        float posX, posY;
-
         // Khởi tạo text box
         box.setSize(sf::Vector2f(400, 200));
         box.setPosition({ (window->getSize().x - box.getSize().x) / 2, (window->getSize().y - box.getSize().y) / 2 });
@@ -45,6 +44,7 @@ public:
         headerText.setPosition({ box.getPosition().x + (box.getSize().x - headerText.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - headerText.getLocalBounds().size.y) / 4 });
     }
 
+    // --- Drawing Functions ---
     void draw(sf::RenderWindow& window) {
         window.draw(box);
         window.draw(headerText);
@@ -53,6 +53,7 @@ public:
         window.draw(text);
     }
 
+    // --- Input Handling Functions ---
     void handleInput(sf::Event event) {
         if (selected) {
             if (const auto* textEntered = event.getIf<sf::Event::TextEntered>()) {
@@ -66,10 +67,6 @@ public:
                 }
             }
         }
-    }
-
-    bool isSelected() const {
-        return selected;
     }
 
     void setSelected(sf::Event& event, sf::RenderWindow* window) {
@@ -88,10 +85,16 @@ public:
         }
     }
 
+    // --- Accessors (Getters) ---
+    bool isSelected() const {
+        return selected;
+    }
+
     std::string getContent() const {
         return content;
     }
 
+    // --- Utility Functions ---
     bool isPressedEnter(sf::Event& event) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) return true;
         return false;

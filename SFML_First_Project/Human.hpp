@@ -1,22 +1,24 @@
 ﻿#ifndef HUMAN_HPP
 #define HUMAN_HPP
 
-#include"Player.hpp"
-#include"Referee.hpp"
-#include<iostream>
-#include<vector>
-#include<SFML/Graphics.hpp>
-#include<SFML/System.hpp>
-#include<SFML/Window.hpp>
-#include<SFML/Audio.hpp>
-#include<SFML/Network.hpp>
+#include "Player.hpp"
+#include "Referee.hpp"
+#include <iostream>
+#include <vector>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 
 using namespace std;
 
 class Human : public Player {
 public:
+    // --- Constructor ---
     Human(char symbol) : Player(symbol) {}
 
+    // --- Game Logic Functions ---
     bool decideMove(sf::RenderWindow& window, sf::Event& event, Board& board, Referee& referee, int isWin) {
         if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
             if (mouseButtonPressed->button == sf::Mouse::Button::Left && isWin == -1) {

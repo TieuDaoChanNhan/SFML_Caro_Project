@@ -14,6 +14,7 @@
 
 using namespace std;
 
+// --- Global Variables ---
 int n = 15, m = 15, cellSize = 70;
 Board board(n, m, cellSize);
 Human playerO('O');
@@ -30,6 +31,15 @@ Referee referee(&isWin);
 vector<string> inputData;
 bool doneInput = false;
 
+// --- Utility Functions ---
+int stringToNumber(string s) {
+    int val = 0;
+    for (auto x : s)
+        val = val * 10 + (x - '0');
+    return val;
+}
+
+// --- Game Logic Functions ---
 void changePlayer() {
     if (isWin != -1) return;
     if (currentPlayer == &playerO) {
@@ -48,43 +58,31 @@ void reset() {
     isWin = -1;
 }
 
-int stringToNumber(string s) {
-    int val = 0;
-    for (auto x : s)
-        val = val * 10 + (x - '0');
-    return val;
-}
-
 void changeWindow() {
     board.setN(stringToNumber(inputData[2]));
     board.setM(stringToNumber(inputData[3]));
     playerO.setName(inputData[0]);
     playerX.setName(inputData[1]);
 
-    // Tính toán kích thước mới
     height = board.getN() * board.getCellSize();
     width = board.getM() * board.getCellSize();
 
-    // Thay đổi kích thước cửa sổ
     window.setSize(sf::Vector2u(width, height));
 
-    // Tính toán vị trí mới để cửa sổ nằm giữa màn hình
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     int posX = (desktop.size.x - width) / 2;
     int posY = (desktop.size.y - height) / 2;
 
-    // Thay đổi vị trí cửa sổ
     window.setPosition(sf::Vector2i(posX, posY));
 
-    // Cập nhật cellSize trong UIUX_Game
     uiuxGame.setCellSize(board.getCellSize());
 
-    // Cập nhật sf::View
     float dx = width, dy = height;
     sf::View view(sf::FloatRect({ 0, 0 }, { dx, dy }));
     window.setView(view);
 }
 
+// --- Main Game Loop ---
 int main() {
     while (window.isOpen()) {
         while (optional event = window.pollEvent()) {
@@ -96,7 +94,7 @@ int main() {
 
             uiuxGame.drawBoard(board.getN(), board.getM());
 
-            // Màn hình nhập cấu hình và thông tin
+            // --- Input Handling ---
             if (inputData.size() < 4) {
                 if (event.has_value()) {
                     sf::Event& actualEvent = event.value();
@@ -109,6 +107,7 @@ int main() {
                 doneInput = true;
             }
 
+            // --- Game Play Logic ---
             if (doneInput) {
                 if (event.has_value()) {
                     sf::Event& actualEvent = event.value();
@@ -118,7 +117,8 @@ int main() {
 
                 uiuxGame.drawAllMoves(playerO);
                 uiuxGame.drawAllMoves(playerX);
-                //cout << currentPlayer->getName() << " " << isWin << "\n";
+
+                // --- Win Condition Handling ---
                 if (isWin != -1) {
                     sf::RectangleShape okButton = uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
 
