@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0] - 2023-03-05
+### Added
+- Hoàn thiện tất cả các tính năng của version 1
+
+### Incoming
+- Version 2 và cải tiến đồ họa, tính năng game
+
 ## [1.0.0] - 2023-03-02
 ### Added
 - Thêm thông báo chiến thắng khi có người thắng.
