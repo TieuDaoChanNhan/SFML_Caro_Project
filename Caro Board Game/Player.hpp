@@ -43,6 +43,15 @@ public:
     void setName(string val) {
         name = val;
     }
+
+    void removeLastMove(Board& board) {
+        if (!moves.empty()) {
+            int x = moves.back().first;
+            int y = moves.back().second;
+            board.clearCell(x, y);
+            moves.pop_back();
+        }
+    }
 };
 
 #endif // !PLAYER_HPP

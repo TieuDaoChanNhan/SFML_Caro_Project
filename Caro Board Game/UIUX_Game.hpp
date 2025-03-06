@@ -7,11 +7,47 @@
 using namespace std;
 
 class UIUX_Game : public UIUX {
+private:
+    sf::RectangleShape undoButton;
+    sf::Text undoText;
 public:
     // --- Constructor ---
-    UIUX_Game(int cellSize, sf::RenderWindow* window) : UIUX(cellSize, window) {}
+    UIUX_Game(int cellSize, sf::RenderWindow* window) : UIUX(cellSize, window), undoText(getFont()) {};
 
     // --- Drawing Functions ---
+    void drawUndoButton() {
+        undoButton.setSize(sf::Vector2f(70, 40));
+        undoButton.setFillColor(sf::Color::Yellow);
+        undoButton.setOutlineColor(sf::Color::Black);
+        undoButton.setOutlineThickness(2);
+        undoText.setString("Undo");
+        undoText.setCharacterSize(20);
+        undoText.setFillColor(sf::Color::Black);
+        float px = getWindow()->getSize().x / 2 - undoButton.getSize().x / 2; // Đặt ở giữa theo chiều ngang
+        float py = getWindow()->getSize().y - (100 / 2) - (undoButton.getSize().y / 2); // Đặt ở giữa theo chiều dọc của phần không gian thêm
+
+        undoButton.setPosition({ px, py });
+
+        float tx = px + (undoButton.getSize().x - undoText.getLocalBounds().size.x) / 2;
+        float ty = py + (undoButton.getSize().y - undoText.getLocalBounds().size.y) / 2 - 5;
+        undoText.setPosition({ tx, ty });
+
+        getWindow()->draw(undoButton);
+        getWindow()->draw(undoText);
+    }
+
+    bool isUndoButtonClicked(sf::RenderWindow& window, sf::Event& event) {
+        if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+                if (undoButton.getGlobalBounds().contains(mousePosFloat)) return true;
+            }
+        }
+        return false;
+    }
+
     void drawBoard(int n, int m) {
         // Vẽ các đường ngang
         for (int i = 0; i <= n; i++) {

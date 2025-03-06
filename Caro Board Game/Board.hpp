@@ -49,6 +49,10 @@ public:
         m = val;
     }
 
+    void clearCell(int x, int y) {
+        board[x][y] = ' ';
+    }
+
     // --- Game Logic Functions ---
     void resetBoard() {
         for (int i = 0; i < n; i++) {

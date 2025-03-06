@@ -15,13 +15,14 @@
 using namespace std;
 
 // --- Global Variables ---
+int addSpace = 100;
 int n = 15, m = 15, cellSize = 70;
 Board board(n, m, cellSize);
 Human playerO('O');
 Human playerX('X');
 Human* currentPlayer = &playerO;
 int isWin = -1;
-unsigned int height = board.getN() * board.getCellSize();
+unsigned int height = board.getN() * board.getCellSize() + addSpace;
 unsigned int width = board.getM() * board.getCellSize();
 sf::RenderWindow window(sf::VideoMode({ width, height }), "Caro Board Game");
 UIUX_Begin uiuxBegin(cellSize, &window);
@@ -67,7 +68,7 @@ void changeWindow() {
     height = board.getN() * board.getCellSize();
     width = board.getM() * board.getCellSize();
 
-    window.setSize(sf::Vector2u(width, height));
+    window.setSize(sf::Vector2u(width, height + addSpace));
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     int posX = (desktop.size.x - width) / 2;
@@ -78,7 +79,7 @@ void changeWindow() {
     uiuxGame.setCellSize(board.getCellSize());
 
     float dx = width, dy = height;
-    sf::View view(sf::FloatRect({ 0, 0 }, { dx, dy }));
+    sf::View view(sf::FloatRect({ 0, 0 }, { dx, dy + addSpace }));
     window.setView(view);
 }
 
@@ -92,7 +93,14 @@ int main() {
 
             window.clear(sf::Color::White);
 
+            // --- Undo Handling ---
             uiuxGame.drawBoard(board.getN(), board.getM());
+            uiuxGame.drawUndoButton();
+            if (uiuxGame.isUndoButtonClicked(window, event.value())) {
+                changePlayer();
+                currentPlayer->removeLastMove(board);
+                continue;
+            }
 
             // --- Input Handling ---
             if (inputData.size() < 4) {

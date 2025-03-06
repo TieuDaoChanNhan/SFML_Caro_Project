@@ -21,6 +21,8 @@ public:
         py = (getWindow()->getSize().y - popup.getSize().y) / 2;
         popup.setPosition({ px, py });
         popup.setFillColor(sf::Color::Blue);
+        popup.setOutlineColor(sf::Color::Black);
+        popup.setOutlineThickness(2);
 
         sf::Text popupText(getFont());
         string winMessage;
