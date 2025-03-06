@@ -2,7 +2,7 @@
 #define UIUX_HPP
 
 #include <iostream>
-#include "Human.hpp"
+#include "Player.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>

@@ -83,6 +83,34 @@ public:
         }
         if (board.isFullBoard()) *isWin = 0;
     }
+    int anotherCheckWin(Board& board) {
+        for (int i = 0; i < board.getN(); i++) {
+            for (int j = 0; j < board.getM(); j++) {
+                if (board.getCell(i, j) == ' ') continue;
+                int xPos = i, yPos = j;
+
+                int xMove, yMove; // Biến thêm vào vị trí x và y để đi check ngang dọc chéo
+
+                // Check hàng dọc
+                xMove = 1; yMove = 0;
+                if (checkDirection(board, xPos, yPos, xMove, yMove)) return 1;
+
+                // Check hàng ngang
+                xMove = 0; yMove = 1;
+                if (checkDirection(board, xPos, yPos, xMove, yMove)) return 1;
+
+                // Check hàng chéo chính
+                xMove = 1; yMove = 1;
+                if (checkDirection(board, xPos, yPos, xMove, yMove)) return 1;
+
+                // Check hàng chéo phụ
+                xMove = 1; yMove = -1;
+                if (checkDirection(board, xPos, yPos, xMove, yMove)) return 1;
+            }
+        }
+        if (board.isFullBoard()) return 0;
+        return -1;
+    }
 };
 
 #endif // !REFEREE_HPP

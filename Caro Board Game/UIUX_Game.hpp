@@ -135,7 +135,7 @@ public:
         }
     }
 
-    void drawAllMoves(Human& player) {
+    void drawAllMoves(Player& player) {
         vector<pair<int, int>> moves = player.getMoves();
         for (auto p : moves) drawMove(p.first, p.second, player.getSymbol());
     }

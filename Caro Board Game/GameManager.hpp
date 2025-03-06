@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "Human.hpp"
 #include "Board.hpp"
 #include "Referee.hpp"
 #include "UIUX_Begin.hpp"
@@ -16,9 +15,9 @@ private:
     int addSpace = 100;
     int n = 15, m = 15, cellSize = 70;
     Board board;
-    Human playerO;
-    Human playerX;
-    Human* currentPlayer;
+    Player playerO;
+    Player playerX;
+    Player* currentPlayer;
     int isWin = -1;
     unsigned int height;
     unsigned int width;
@@ -28,7 +27,6 @@ private:
     UIUX_Victory uiuxVictory;
     Referee referee;
     std::vector<std::string> inputData;
-    bool doneInput = false;
 
     int stringToNumber(const std::string& s) {
         int val = 0;
@@ -50,7 +48,7 @@ private:
         currentPlayer = &playerO;
         isWin = -1;
         //inputData.clear();
-        doneInput = false;
+        //doneInput = false;
     }
 
     void changeWindow() {
@@ -100,25 +98,20 @@ private:
         if (inputData.size() < 4) {
             uiuxBegin.inputBox(&inputData, event);
             if (inputData.size() == 4) changeWindow();
-        }
-        else {
-            doneInput = true;
+            return;
         }
 
-        if (doneInput) {
-            if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, isWin)) changePlayer();
+        if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, *currentPlayer, isWin)) changePlayer();
 
-            if (isWin != -1) {
-                sf::RectangleShape okButton = uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
+        if (isWin != -1) {
+            sf::RectangleShape okButton = uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
 
-                if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
-                    if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                        sf::Vector2f mousePos(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
-                        if (okButton.getGlobalBounds().contains(mousePos)) reset();
-                    }
+            if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+                if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
+                    if (okButton.getGlobalBounds().contains(mousePos)) reset();
                 }
             }
-
         }
     }
 
@@ -153,6 +146,8 @@ public:
         referee(&isWin) {}
 
     void run() {
+        playerO.setTypePlayer(0);
+        playerX.setTypePlayer(1);
         while (window.isOpen()) {
             while (optional event = window.pollEvent()) {
                 if (event) {
