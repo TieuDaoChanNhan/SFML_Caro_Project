@@ -87,6 +87,16 @@ private:
             return;
         }
 
+        if (uiuxGame.isNewButtonClicked(window, event)) {
+            reset();
+            return;
+        }
+
+        if (uiuxGame.isExitButtonClicked(window, event)) {
+            window.close();
+            return;
+        }
+
         if (inputData.size() < 4) {
             uiuxBegin.inputBox(&inputData, event);
             if (inputData.size() == 4) changeWindow();
@@ -115,7 +125,7 @@ private:
     void render() {
         window.clear(sf::Color::White);
         uiuxGame.drawBoard(board.getN(), board.getM());
-        uiuxGame.drawUndoButton();
+        uiuxGame.drawButtons();
 
         if (inputData.size() < 4) {
             uiuxBegin.box.draw(window);
@@ -123,9 +133,7 @@ private:
         else {
             uiuxGame.drawAllMoves(playerO);
             uiuxGame.drawAllMoves(playerX);
-            if (isWin != -1) {
-                uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
-            }
+            if (isWin != -1) uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
         }
         window.display();
     }
