@@ -2,7 +2,8 @@
 
 ## [1.0.1] - 2023-03-05
 ### Added
-- Thêm tính năng undo
+- Thêm tính năng undo, new game, exit
+- Thêm tính năng bot tự đánh (độ phức tạp cao, đang sửa)
 
 ## [1.0.0] - 2023-03-05
 ### Added
