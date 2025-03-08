@@ -27,7 +27,7 @@ public:
     TextBox(sf::Font& font, sf::RenderWindow* window, const std::string& header)
         : selected(false), text(font), headerText(font), okText(font) {
         // Khởi tạo text box
-        box.setSize(sf::Vector2f(400, 200));
+        box.setSize(sf::Vector2f(500, 200));
         box.setPosition({ (window->getSize().x - box.getSize().x) / 2, (window->getSize().y - box.getSize().y) / 2 });
         box.setFillColor(sf::Color::Blue);
         box.setOutlineColor(sf::Color::Black);

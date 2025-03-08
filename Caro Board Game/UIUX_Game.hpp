@@ -10,9 +10,16 @@ class UIUX_Game : public UIUX {
 private:
     sf::RectangleShape undoButton, newButton, exitButton;
     sf::Text undoText, newText, exitText;
+
+    // --- Timer ---
+    sf::Clock clock;
+    sf::Time timeLimit;
+    sf::Text timerText;
+    sf::RectangleShape timerSpace;
+
     void drawSpecificButton(sf::RectangleShape& button, sf::Text& text, int pos) {
-        float px = (getWindow()->getSize().x / 2 - button.getSize().x / 2) * pos / 2; // Đặt ở giữa theo chiều ngang
-        float py = getWindow()->getSize().y - (100 / 2) - (button.getSize().y / 2); // Đặt ở giữa theo chiều dọc của phần không gian thêm
+        float px = (getWindow()->getSize().x / 2 - button.getSize().x / 2) * pos / 4; 
+        float py = getWindow()->getSize().y - (100 / 2) - (button.getSize().y / 2); 
 
         button.setPosition({ px, py });
 
@@ -25,7 +32,7 @@ private:
     }
 public:
     // --- Constructor ---
-    UIUX_Game(int cellSize, sf::RenderWindow* window) : UIUX(cellSize, window), undoText(getFont()), newText(getFont()), exitText(getFont()) {
+    UIUX_Game(int cellSize, sf::RenderWindow* window, sf::Time timeLimit = sf::seconds(0.0f)) : UIUX(cellSize, window), undoText(getFont()), newText(getFont()), exitText(getFont()), timeLimit(timeLimit), timerText(getFont()) {
         undoButton.setSize(sf::Vector2f(70, 40));
         undoButton.setFillColor(sf::Color::Yellow);
         undoButton.setOutlineColor(sf::Color::Black);
@@ -41,6 +48,11 @@ public:
         exitButton.setOutlineColor(sf::Color::Black);
         exitButton.setOutlineThickness(2);
 
+        timerSpace.setSize(sf::Vector2f(90, 40));
+        timerSpace.setFillColor(sf::Color::Yellow);
+        timerSpace.setOutlineColor(sf::Color::Black);
+        timerSpace.setOutlineThickness(2);
+
         undoText.setString("Undo");
         undoText.setCharacterSize(20);
         undoText.setFillColor(sf::Color::Black);
@@ -52,13 +64,35 @@ public:
         exitText.setString("Exit");
         exitText.setCharacterSize(20);
         exitText.setFillColor(sf::Color::Black);
+
+        timerText.setCharacterSize(20);
+        timerText.setFillColor(sf::Color::Black);
     };
+
+    // --- Timer Functions ---
+    void restartTimer() {
+        clock.restart();
+    }
+
+    bool isTimeUp() {
+        return clock.getElapsedTime() >= timeLimit;
+    }
+
+    sf::Time getRemainingTime() {
+        return timeLimit - clock.getElapsedTime();
+    }
+
+    void drawTimer(sf::Vector2f position) {
+        sf::Time remainingTime = getRemainingTime();
+        timerText.setString("Time: " + std::to_string(static_cast<int>(remainingTime.asSeconds())));
+        drawSpecificButton(timerSpace, timerText, 7);
+    }
 
     // --- Drawing Functions ---
     void drawButtons() {
-        drawSpecificButton(undoButton, undoText, 2);
+        drawSpecificButton(undoButton, undoText, 3);
         drawSpecificButton(newButton, newText, 1);
-        drawSpecificButton(exitButton, exitText, 3);
+        drawSpecificButton(exitButton, exitText, 5);
     }
 
     bool isUndoButtonClicked(sf::RenderWindow& window, sf::Event& event) {

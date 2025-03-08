@@ -38,7 +38,7 @@ private:
             winningLine.push_back(make_pair(xCrr, yCrr)); // Thêm ô vào đường chiến thắng
         }
 
-        if (cnt >= 5) {
+        if (cnt >= 3) { // Số ô liên tiếp để thắng
             return true;
         }
         return false;
@@ -83,7 +83,7 @@ public:
         if (board.isFullBoard()) *isWin = 0;
     }
 
-    int anotherCheckWin(Board& board) {
+    int evaluateGameState(Board& board) {
         for (int i = 0; i < board.getN(); i++) {
             for (int j = 0; j < board.getM(); j++) {
                 if (board.getCell(i, j) == ' ') continue;

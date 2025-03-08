@@ -2,16 +2,21 @@
 #define BOTALGORITHM_HPP
 
 #include<iostream>
+#include<set>
 #include"Referee.hpp"
 #include"Board.hpp"
 
 class BotAlgorithm {
 private:
-	int x, y; // vị trí được chọn sau khi sử dụng thuật toán
+	int x = -1, y = -1; // vị trí được chọn sau khi sử dụng thuật toán
+	set<string> st;
 	int dfs(Board& board, Referee& referee, int depth, char currentSymbol) {
-		int judge = referee.anotherCheckWin(board);
-		/*cout << depth << " " << judge << " " << "\n";
-		for (int i = 0; i < board.getN(); i++) {
+		string state = board.getBoardState();
+		if (st.count(state)) return 0;
+		st.insert(state);
+		int judge = referee.evaluateGameState(board);
+		//cout << depth << " " << judge << " " << "\n";
+		/*for (int i = 0; i < board.getN(); i++) {
 			for (int j = 0; j < board.getM(); j++) {
 				if (board.getCell(i, j) == ' ') cout << ".";
 				else cout << board.getCell(i, j);
@@ -23,7 +28,7 @@ private:
 			if (judge == 1)
 				if (depth % 2 == 0) return 1;
 				else return -1;
-		if (depth == 3) return 0;
+		if (depth == 10) return 0;
 		char nextSymbol;
 		if (currentSymbol == 'X') nextSymbol = 'O';
 		else nextSymbol = 'X';
@@ -45,6 +50,7 @@ private:
 public:
 	pair<int, int> findMove(Board& board, Referee& referee, char currentSymbol) {
 		dfs(board, referee, 0, currentSymbol);
+		st.clear();
 		return make_pair(x, y);
 	}
 };

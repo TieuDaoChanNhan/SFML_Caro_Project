@@ -28,10 +28,12 @@ public:
     void inputBox(vector<string>* input, sf::Event& event) {
         if (input->size() != tmp) {
             tmp++;
-            if (input->size() == 0) box = TextBox(getFont(), getWindow(), "Player O's name:");
-            if (input->size() == 1) box = TextBox(getFont(), getWindow(), "Player X's name:");
-            if (input->size() == 2) box = TextBox(getFont(), getWindow(), "Width of board:");
-            if (input->size() == 3) box = TextBox(getFont(), getWindow(), "Length of board:");
+            if (input->size() == 0) box = TextBox(getFont(), getWindow(), "Player O's type (player or bot):");
+            if (input->size() == 1) box = TextBox(getFont(), getWindow(), "Player X's type (player or bot):");
+            if (input->size() == 2) box = TextBox(getFont(), getWindow(), "Player O's name:");
+            if (input->size() == 3) box = TextBox(getFont(), getWindow(), "Player X's name:");
+            if (input->size() == 4) box = TextBox(getFont(), getWindow(), "Width of board:");
+            if (input->size() == 5) box = TextBox(getFont(), getWindow(), "Length of board:");
         }
         box.setSelected(event, getWindow());
         box.handleInput(event);

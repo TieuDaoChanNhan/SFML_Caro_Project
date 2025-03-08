@@ -73,6 +73,14 @@ public:
 
                     if (board.getCell(x, y) == ' ') {
                         board.setCell(x, y, getSymbol());
+                        /*cout << x << " " << y << "\n";
+                        for (int i = 0; i < board.getN(); i++) {
+                            for (int j = 0; j < board.getM(); j++) {
+                                if (board.getCell(i, j) == ' ') cout << ".";
+                                else cout << board.getCell(i, j);
+                            }
+                            cout << "\n";
+                        }*/
                         addMove(x, y);
                         referee.checkWin(board);
                         return true;
@@ -84,10 +92,18 @@ public:
         else {
             pair<int,int> dec = AI.findMove(board, referee, player.symbol);
             int x = dec.first, y = dec.second;
-            //cout << x << " " << y << "\n";
             board.setCell(x, y, getSymbol());
             addMove(x, y);
+            cout << x << " " << y << "\n";
+            for (int i = 0; i < board.getN(); i++) {
+                for (int j = 0; j < board.getM(); j++) {
+                    if (board.getCell(i, j) == ' ') cout << ".";
+                    else cout << board.getCell(i, j);
+                }
+                cout << "\n";
+            }
             referee.checkWin(board);
+            cout << "win: " << isWin << "\n";
             return true;
         }
     }
