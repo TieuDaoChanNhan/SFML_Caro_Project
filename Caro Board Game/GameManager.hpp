@@ -1,4 +1,4 @@
-#ifndef GAMEMANAGER_HPP
+﻿#ifndef GAMEMANAGER_HPP
 #define GAMEMANAGER_HPP
 
 #include <iostream>
@@ -128,6 +128,23 @@ private:
             uiuxGame.drawAllMoves(playerX);
             if (isWin != -1) uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
         }
+
+        if (isWin != -1) {
+            if (isWin == 1) {
+                vector<pair<int, int>> winningLine = referee.getWinningLine();
+                if (!winningLine.empty()) {
+                    sf::VertexArray line(sf::PrimitiveType::LineStrip, winningLine.size()); // Sử dụng LineStrip
+                    for (size_t i = 0; i < winningLine.size(); ++i) {
+                        int x = winningLine[i].first * board.getCellSize() + board.getCellSize() / 2;
+                        int y = winningLine[i].second * board.getCellSize() + board.getCellSize() / 2 + 2;
+                        line[i].position = sf::Vector2f(x, y);
+                        line[i].color = sf::Color::Red; // Màu đường chiến thắng
+                    }
+                    window.draw(line);
+                }
+            }
+            uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
+        }
         window.display();
     }
 
@@ -146,7 +163,7 @@ public:
         referee(&isWin) {}
 
     void run() {
-        playerO.setTypePlayer(0);
+        playerO.setTypePlayer(1);
         playerX.setTypePlayer(1);
         while (window.isOpen()) {
             while (optional event = window.pollEvent()) {
