@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.0] - 2023-03-09
+### Added
+- Thêm tính năng đường chéo thể hiện ô chiến thắng
+- Thêm tính năng chọn bot cho O hoặc X và bot chạy ổn định ở caro 3x3
+
 ## [1.0.1] - 2023-03-05
 ### Added
 - Thêm tính năng undo, new game, exit
