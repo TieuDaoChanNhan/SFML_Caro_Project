@@ -71,7 +71,7 @@ public:
                     int x = mousePos.x / board.getCellSize();
                     int y = mousePos.y / board.getCellSize();
 
-                    if (board.getCell(x, y) == ' ') {
+                    if (board.isInside(x,y) && board.getCell(x, y) == ' ') {
                         board.setCell(x, y, getSymbol());
                         /*cout << x << " " << y << "\n";
                         for (int i = 0; i < board.getN(); i++) {

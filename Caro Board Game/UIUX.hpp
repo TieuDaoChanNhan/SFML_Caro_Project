@@ -18,8 +18,7 @@ private:
     int cellSize;
     sf::RenderWindow* window;
 
-protected:
-    // --- Protected Helper Functions ---
+public:
     bool loadFont() {
         if (!font.openFromFile("./arial.ttf")) {
             cout << "Error Loading Font" << "\n";
@@ -27,8 +26,6 @@ protected:
         }
         return true;
     }
-
-public:
     // --- Constructor ---
     UIUX(int cellSize, sf::RenderWindow* window) : cellSize(cellSize), window(window) {
         if (!loadFont()) {

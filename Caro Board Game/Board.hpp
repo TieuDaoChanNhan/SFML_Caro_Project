@@ -56,6 +56,10 @@ public:
         return *this;
     }
 
+    bool isInside(int x, int y) {
+        return (x >= 0 && x < n && y >= 0 && y < m);
+    }
+
     char getCell(int x, int y) {
         return board[x][y];
     }

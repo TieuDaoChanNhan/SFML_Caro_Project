@@ -8,11 +8,15 @@
 #include "Referee.hpp"
 #include "UIUX_Begin.hpp"
 #include "UIUX_Game.hpp"
-#include "UIUX_Victory.hpp"
+#include "Timer.hpp"
+#include <chrono>
+#include <thread> // Thêm include này
+
+using namespace std;
 
 class GameManager {
 private:
-    int addSpace = 100;
+    int addSpace = 200;
     int n = 15, m = 15, cellSize = 70;
     Board board;
     Player playerO;
@@ -24,10 +28,11 @@ private:
     sf::RenderWindow window;
     UIUX_Begin uiuxBegin;
     UIUX_Game uiuxGame;
-    UIUX_Victory uiuxVictory;
     Referee referee;
     std::vector<std::string> inputData;
-    bool timerRunning;
+    Timer timer;
+    bool isDoneInput = false;
+    
 
     int stringToNumber(const std::string& s) {
         int val = 0;
@@ -43,14 +48,14 @@ private:
     }
 
     void reset() {
-        uiuxGame.restartTimer();
+        timer.setTimelimit(sf::seconds(30.f));
+        timer.restartTimer();
         playerO.resetMoves();
         playerX.resetMoves();
         board.resetBoard();
         currentPlayer = &playerO;
         isWin = -1;
-        //inputData.clear();
-        //doneInput = false;
+        isDoneInput = false;
     }
 
     void changeWindow() {
@@ -85,10 +90,15 @@ private:
             window.close();
         }
 
+        if (uiuxGame.isTimerClicked(window, event)) {
+            timer.changeState();
+            return;
+        }
+
         if (uiuxGame.isUndoButtonClicked(window, event)) {
             changePlayer();
             currentPlayer->removeLastMove(board);
-            uiuxGame.restartTimer();
+            timer.restartTimer();
             return;
         }
 
@@ -102,41 +112,44 @@ private:
             return;
         }
 
+        if (uiuxGame.isResetButtonClicked(window, event)) {
+            reset();
+            inputData.clear();
+            uiuxBegin.resetIndex();
+            return;
+        }
+
         if (inputData.size() < 6) {
             uiuxBegin.inputBox(&inputData, event);
             if (inputData.size() == 6) {
+                isDoneInput = true;
                 changeWindow();
-                timerRunning = true; // Bắt đầu timer sau khi nhập xong
-                uiuxGame.restartTimer();
+                timer.setTimelimit(sf::seconds(30.f));
+                timer.restartTimer();
             }
             return;
         }
 
+        uiuxGame.setInformText("Now is " + currentPlayer->getName() + "'s turn");
+
         if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, *currentPlayer, isWin)) {
             changePlayer();
-            uiuxGame.restartTimer();
+            timer.restartTimer();
         }
 
         if (isWin != -1) {
-            sf::RectangleShape okButton = uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
-
-            if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
-                if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                    sf::Vector2f mousePos(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
-                    if (okButton.getGlobalBounds().contains(mousePos)) {
-                        reset();
-                        timerRunning = true; // Bắt đầu timer sau khi reset
-                        uiuxGame.restartTimer();
-                    }
-                }
-            }
+            timer.setTimelimit(sf::seconds(0.f));
+            if (isWin == 1) uiuxGame.setInformText("Congratulation, " + currentPlayer->getName() + " wins!");
+            else uiuxGame.setInformText("This game is draw!");
         }
     }
 
     void render() {
+        uiuxGame.setHoover(isDoneInput && (isWin == -1));
         window.clear(sf::Color::White);
         uiuxGame.drawBoard(board.getN(), board.getM());
         uiuxGame.drawButtons();
+        uiuxGame.drawInform();
 
         if (inputData.size() < 6) {
             uiuxBegin.box.draw(window);
@@ -144,7 +157,6 @@ private:
         else {
             uiuxGame.drawAllMoves(playerO);
             uiuxGame.drawAllMoves(playerX);
-            if (isWin != -1) uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
         }
         if (isWin == 1) {
             std::vector<std::pair<int, int>> winningLine = referee.getWinningLine();
@@ -158,10 +170,9 @@ private:
                 }
                 window.draw(line);
             }
-            uiuxVictory.drawWinPopup((isWin == 0), currentPlayer->getName());
         }
 
-        uiuxGame.drawTimer(sf::Vector2f(10, 10)); // Vẽ timer
+        uiuxGame.drawTimer(timer.getRemainingTime(), timer.getState()); // Vẽ timer
 
         window.display();
     }
@@ -176,24 +187,35 @@ public:
         width(board.getM()* board.getCellSize()),
         window(sf::VideoMode({ width, height }), "Caro Board Game"),
         uiuxBegin(cellSize, &window),
-        uiuxGame(cellSize, &window, sf::seconds(30.0f)), // Thêm timeLimit
-        uiuxVictory(cellSize, &window),
+        uiuxGame(cellSize, &window),
         referee(&isWin),
-        timerRunning(false)
+        timer()
     {
     }
 
     void run() {
+        sf::Clock clock;
+        sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 FPS
+
         while (window.isOpen()) {
+            sf::Time elapsed = clock.restart();
+
             while (optional event = window.pollEvent()) {
                 if (event) {
                     handleEvents(event.value());
                 }
-                render();
-                if (timerRunning && uiuxGame.isTimeUp()) { // Chỉ kiểm tra timer nếu timerRunning là true
-                    changePlayer();
-                    uiuxGame.restartTimer();
-                }
+            }
+
+            render();
+
+            if (timer.getTimeLimit() == sf::seconds(30.f) && timer.isTimeUp()) {
+                changePlayer();
+                timer.restartTimer();
+            }
+
+            sf::Time sleepTime = timePerFrame - elapsed;
+            if (sleepTime > sf::Time::Zero) {
+                std::this_thread::sleep_for(std::chrono::microseconds(sleepTime.asMicroseconds()));
             }
         }
     }

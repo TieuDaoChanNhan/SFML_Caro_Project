@@ -13,47 +13,82 @@ using namespace std;
 
 class TextBox {
 private:
-    // --- Private Members ---
     sf::Text text;
     sf::RectangleShape box;
-    std::string content;
+    std::string content = "";
     bool selected;
     sf::Text headerText;
-    sf::RectangleShape okButton;
-    sf::Text okText;
+    sf::RectangleShape topBar;
+    sf::VertexArray underline;
+    sf::Color defaultBoxColor;
+    sf::Color hoverBoxColor;
+    sf::Color selectedUnderlineColor;
+    sf::Color defaultUnderlineColor;
 
 public:
-    // --- Constructor ---
     TextBox(sf::Font& font, sf::RenderWindow* window, const std::string& header)
-        : selected(false), text(font), headerText(font), okText(font) {
-        // Khởi tạo text box
-        box.setSize(sf::Vector2f(500, 200));
+        : selected(true), text(font), headerText(font), // Auto select khi tạo
+        defaultBoxColor(sf::Color(50, 150, 250)),
+        hoverBoxColor(sf::Color(70, 170, 255)),
+        selectedUnderlineColor(sf::Color::Yellow),
+        defaultUnderlineColor(sf::Color::White)
+    {
+        box.setSize(sf::Vector2f(550, 180));
         box.setPosition({ (window->getSize().x - box.getSize().x) / 2, (window->getSize().y - box.getSize().y) / 2 });
-        box.setFillColor(sf::Color::Blue);
+        box.setFillColor(defaultBoxColor);
         box.setOutlineColor(sf::Color::Black);
         box.setOutlineThickness(2);
 
         text.setCharacterSize(30);
         text.setFillColor(sf::Color::White);
-        text.setPosition({ box.getPosition().x + (box.getSize().x - headerText.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - headerText.getLocalBounds().size.y) * 3 / 5 });
+        text.setPosition({ box.getPosition().x + (box.getSize().x - text.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - text.getLocalBounds().size.y) * 2 / 3 });
 
-        // Khởi tạo header text
         headerText.setString(header);
         headerText.setCharacterSize(30);
         headerText.setFillColor(sf::Color::White);
-        headerText.setPosition({ box.getPosition().x + (box.getSize().x - headerText.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - headerText.getLocalBounds().size.y) / 4 });
+        headerText.setPosition({ box.getPosition().x + (box.getSize().x - headerText.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - headerText.getLocalBounds().size.y) / 3 });
+
+        topBar.setSize(sf::Vector2f(box.getSize().x, 40));
+        topBar.setOutlineColor(sf::Color::Black);
+        topBar.setOutlineThickness(2);
+        sf::Color darkBlue(25, 118, 210);
+        topBar.setFillColor(darkBlue);
+        underline = sf::VertexArray(sf::PrimitiveType::Lines, 2);
+        underline[0].color = defaultUnderlineColor;
+        underline[1].color = defaultUnderlineColor;
+
+        underline[0].position = sf::Vector2f(box.getPosition().x + 50, text.getPosition().y + 25);
+        underline[1].position = sf::Vector2f(box.getPosition().x + 500 + text.getLocalBounds().size.x, text.getPosition().y + 25);
     }
 
-    // --- Drawing Functions ---
     void draw(sf::RenderWindow& window) {
+        // Hover effect chỉ khi chuột di qua
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+        if (box.getGlobalBounds().contains(mousePosFloat)) {
+            box.setFillColor(hoverBoxColor);
+        }
+        else {
+            box.setFillColor(defaultBoxColor);
+        }
+
         window.draw(box);
         window.draw(headerText);
         text.setString(content);
-        text.setPosition({ box.getPosition().x + (box.getSize().x - text.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - text.getLocalBounds().size.y) * 3 / 5 });
+        text.setPosition({ box.getPosition().x + (box.getSize().x - text.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - text.getLocalBounds().size.y) * 2 / 3 });
         window.draw(text);
+
+        // Vẽ gạch chân, đổi màu khi select.
+        sf::Color underlinecolor = selected ? selectedUnderlineColor : defaultUnderlineColor;
+        underline[0].color = underlinecolor;
+        underline[1].color = underlinecolor;
+        window.draw(underline);
+
+        // Vẽ thanh bên trên textbox
+        topBar.setPosition({ box.getPosition().x, box.getPosition().y - 5 });
+        window.draw(topBar);
     }
 
-    // --- Input Handling Functions ---
     void handleInput(sf::Event event) {
         if (selected) {
             if (const auto* textEntered = event.getIf<sf::Event::TextEntered>()) {
@@ -70,22 +105,9 @@ public:
     }
 
     void setSelected(sf::Event& event, sf::RenderWindow* window) {
-        if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
-            if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
-                sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
-
-                if (box.getGlobalBounds().contains(mousePosFloat)) {
-                    selected = true;
-                }
-                else {
-                    selected = false;
-                }
-            }
-        }
+        // Loại bỏ việc chọn bằng click chuột
     }
 
-    // --- Accessors (Getters) ---
     bool isSelected() const {
         return selected;
     }
@@ -94,19 +116,18 @@ public:
         return content;
     }
 
-    // --- Utility Functions ---
     bool isPressedEnter(sf::Event& event) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) return true;
         return false;
     }
 
-    bool isOkButtonClicked(sf::Vector2f mousePos) const {
-        return okButton.getGlobalBounds().contains(mousePos);
+    void reset(const std::string& newHeader) {
+        content = "";
+        headerText.setString(newHeader);
     }
 
-    void reset(const std::string& newHeader) {
-        content.clear();
-        headerText.setString(newHeader);
+    void resetContent() {
+        content = "";
     }
 };
 

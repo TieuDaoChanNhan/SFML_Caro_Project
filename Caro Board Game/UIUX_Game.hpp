@@ -8,31 +8,18 @@ using namespace std;
 
 class UIUX_Game : public UIUX {
 private:
-    sf::RectangleShape undoButton, newButton, exitButton;
-    sf::Text undoText, newText, exitText;
-
-    // --- Timer ---
-    sf::Clock clock;
-    sf::Time timeLimit;
+    sf::RectangleShape undoButton, newButton, exitButton, informBox, resetButton;
+    sf::Text undoText, newText, exitText, informText, resetText;
     sf::Text timerText;
     sf::RectangleShape timerSpace;
-
-    void drawSpecificButton(sf::RectangleShape& button, sf::Text& text, int pos) {
-        float px = (getWindow()->getSize().x / 2 - button.getSize().x / 2) * pos / 4; 
-        float py = getWindow()->getSize().y - (100 / 2) - (button.getSize().y / 2); 
-
-        button.setPosition({ px, py });
-
-        float tx = px + (button.getSize().x - text.getLocalBounds().size.x) / 2;
-        float ty = py + (button.getSize().y - text.getLocalBounds().size.y) / 2 - 5;
-        text.setPosition({ tx, ty });
-
-        getWindow()->draw(button);
-        getWindow()->draw(text);
-    }
+    string currentTime;
+    // Màu sắc cho hiệu ứng hover
+    sf::Color defaultButtonColor = sf::Color::Yellow;
+    sf::Color hoverButtonColor = sf::Color(255, 255, 150); // Màu vàng nhạt hơn khi hover
+    bool isHoover;
 public:
     // --- Constructor ---
-    UIUX_Game(int cellSize, sf::RenderWindow* window, sf::Time timeLimit = sf::seconds(0.0f)) : UIUX(cellSize, window), undoText(getFont()), newText(getFont()), exitText(getFont()), timeLimit(timeLimit), timerText(getFont()) {
+    UIUX_Game(int cellSize, sf::RenderWindow* window) : UIUX(cellSize, window), undoText(getFont()), newText(getFont()), exitText(getFont()) , timerText(getFont()), informText(getFont()), resetText(getFont()){
         undoButton.setSize(sf::Vector2f(70, 40));
         undoButton.setFillColor(sf::Color::Yellow);
         undoButton.setOutlineColor(sf::Color::Black);
@@ -53,6 +40,16 @@ public:
         timerSpace.setOutlineColor(sf::Color::Black);
         timerSpace.setOutlineThickness(2);
 
+        informBox.setSize(sf::Vector2f(400, 60));
+        informBox.setFillColor(sf::Color::Cyan);
+        informBox.setOutlineColor(sf::Color::Black);
+        informBox.setOutlineThickness(2);
+
+        resetButton.setSize(sf::Vector2f(70, 40));
+        resetButton.setFillColor(sf::Color::Yellow);
+        resetButton.setOutlineColor(sf::Color::Black);
+        resetButton.setOutlineThickness(2);
+
         undoText.setString("Undo");
         undoText.setCharacterSize(20);
         undoText.setFillColor(sf::Color::Black);
@@ -67,32 +64,41 @@ public:
 
         timerText.setCharacterSize(20);
         timerText.setFillColor(sf::Color::Black);
+        
+        informText.setCharacterSize(30);
+        informText.setFillColor(sf::Color::Black);
+        informText.setString("Welcome to the game!");
+
+        resetText.setString("Reset");
+        resetText.setCharacterSize(20);
+        resetText.setFillColor(sf::Color::Black);
     };
 
-    // --- Timer Functions ---
-    void restartTimer() {
-        clock.restart();
-    }
-
-    bool isTimeUp() {
-        return clock.getElapsedTime() >= timeLimit;
-    }
-
-    sf::Time getRemainingTime() {
-        return timeLimit - clock.getElapsedTime();
-    }
-
-    void drawTimer(sf::Vector2f position) {
-        sf::Time remainingTime = getRemainingTime();
-        timerText.setString("Time: " + std::to_string(static_cast<int>(remainingTime.asSeconds())));
-        drawSpecificButton(timerSpace, timerText, 7);
+    void setHoover(bool val) {
+        isHoover = val;
     }
 
     // --- Drawing Functions ---
     void drawButtons() {
-        drawSpecificButton(undoButton, undoText, 3);
-        drawSpecificButton(newButton, newText, 1);
-        drawSpecificButton(exitButton, exitText, 5);
+        drawSpecificButton(undoButton, undoText, 4);
+        drawSpecificButton(newButton, newText, 2);
+        drawSpecificButton(exitButton, exitText, 6);
+        drawSpecificButton(resetButton, resetText, 8);
+    }
+
+    void drawInform() {
+        float px = (getWindow()->getSize().x / 2 - informBox.getSize().x / 2);
+        float py = getWindow()->getSize().y - 200 + (200 - informBox.getSize().y) / 5;
+        //cout << "x: " << py << "\n";
+
+        informBox.setPosition({ px, py });
+
+        float tx = px + (informBox.getSize().x - informText.getLocalBounds().size.x) / 2;
+        float ty = py + (informBox.getSize().y - informText.getLocalBounds().size.y) / 2 - 5;
+        informText.setPosition({ tx, ty });
+
+        getWindow()->draw(informBox);
+        getWindow()->draw(informText);
     }
 
     bool isUndoButtonClicked(sf::RenderWindow& window, sf::Event& event) {
@@ -126,6 +132,18 @@ public:
                 sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 
                 if (exitButton.getGlobalBounds().contains(mousePosFloat)) return true;
+            }
+        }
+        return false;
+    }
+
+    bool isResetButtonClicked(sf::RenderWindow& window, sf::Event& event) {
+        if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+                if (resetButton.getGlobalBounds().contains(mousePosFloat)) return true;
             }
         }
         return false;
@@ -199,6 +217,62 @@ public:
             X.setPosition({ xPos, yPos });
             getWindow()->draw(X);
         }
+    }
+
+    void drawSpecificButton(sf::RectangleShape& button, sf::Text& text, int pos) {
+        float px = (getWindow()->getSize().x / 2 - button.getSize().x / 2) * pos / 6;
+        float py = getWindow()->getSize().y - 200 + (200 - button.getSize().y) * 4 / 5;
+
+        button.setPosition({ px, py });
+
+        float tx = px + (button.getSize().x - text.getLocalBounds().size.x) / 2;
+        float ty = py + (button.getSize().y - text.getLocalBounds().size.y) / 2 - 5;
+        text.setPosition({ tx, ty });
+
+        // Hiệu ứng hover
+        if (isHoover && pos != 10) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*getWindow());
+            sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+            if (button.getGlobalBounds().contains(mousePosFloat)) {
+                button.setFillColor(hoverButtonColor);
+            }
+            else {
+                button.setFillColor(defaultButtonColor);
+            }
+        }
+
+        getWindow()->draw(button);
+        getWindow()->draw(text);
+    }
+
+    void drawTimer(sf::Time remainingTime, bool isPaused) {
+        currentTime = std::to_string(static_cast<int>(remainingTime.asSeconds()));
+        if (currentTime[0] == '-') currentTime = "0";
+        currentTime = "Time: " + currentTime;
+        timerText.setString(currentTime);
+        if (isPaused) {
+            timerSpace.setFillColor(sf::Color(150, 150, 150)); // Màu xám khi tạm dừng
+        }
+        else {
+            timerSpace.setFillColor(sf::Color::Yellow); // Màu vàng khi chạy
+        }
+        drawSpecificButton(timerSpace, timerText, 10);
+    }
+
+    void setInformText(string val) {
+        informText.setString(val);
+    }
+
+    bool isTimerClicked(sf::RenderWindow& window, sf::Event& event) {
+        if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+                if (timerSpace.getGlobalBounds().contains(mousePosFloat)) return true;
+            }
+        }
+        return false;
     }
 };
 

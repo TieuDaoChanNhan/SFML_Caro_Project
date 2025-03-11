@@ -140,13 +140,13 @@
     <ClCompile Include="TextBox.hpp" />
     <ClCompile Include="UIUX_Begin.hpp" />
     <ClCompile Include="UIUX_Game.hpp" />
-    <ClCompile Include="UIUX_Victory.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.hpp" />
     <ClInclude Include="BotAlgorithm.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Referee.hpp" />
+    <ClInclude Include="Timer.hpp" />
     <ClInclude Include="UIUX.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
