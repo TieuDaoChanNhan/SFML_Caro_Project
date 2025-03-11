@@ -9,8 +9,10 @@
 #include "UIUX_Begin.hpp"
 #include "UIUX_Game.hpp"
 #include "Timer.hpp"
+#include "Human.hpp"
+#include "Bot.hpp"
 #include <chrono>
-#include <thread> // Thêm include này
+#include <thread>
 
 using namespace std;
 
@@ -19,8 +21,8 @@ private:
     int addSpace = 200;
     int n = 15, m = 15, cellSize = 70;
     Board board;
-    Player playerO;
-    Player playerX;
+    Player* playerO;
+    Player* playerX;
     Player* currentPlayer;
     int isWin = -1;
     unsigned int height;
@@ -32,7 +34,6 @@ private:
     std::vector<std::string> inputData;
     Timer timer;
     bool isDoneInput = false;
-    
 
     int stringToNumber(const std::string& s) {
         int val = 0;
@@ -44,29 +45,29 @@ private:
 
     void changePlayer() {
         if (isWin != -1) return;
-        currentPlayer = (currentPlayer == &playerO) ? &playerX : &playerO;
+        currentPlayer = (currentPlayer == playerO) ? playerX : playerO;
     }
 
     void reset() {
         timer.setTimelimit(sf::seconds(30.f));
         timer.restartTimer();
-        playerO.resetMoves();
-        playerX.resetMoves();
+        playerO->resetMoves();
+        playerX->resetMoves();
         board.resetBoard();
-        currentPlayer = &playerO;
+        currentPlayer = playerO;
         isWin = -1;
         isDoneInput = false;
     }
 
     void changeWindow() {
-        if (inputData[0] == "player") playerO.setTypePlayer(1);
-        else playerO.setTypePlayer(0);
-        if (inputData[1] == "player") playerX.setTypePlayer(1);
-        else playerX.setTypePlayer(0);
+        if (inputData[0] == "player") playerO = new Human('O');
+        else playerO = new Bot('O');
+        if (inputData[1] == "player") playerX = new Human('X');
+        else playerX = new Bot('X');
         board.setN(stringToNumber(inputData[4]));
         board.setM(stringToNumber(inputData[5]));
-        playerO.setName(inputData[2]);
-        playerX.setName(inputData[3]);
+        playerO->setName(inputData[2]);
+        playerX->setName(inputData[3]);
 
         height = board.getN() * board.getCellSize() + addSpace;
         width = board.getM() * board.getCellSize();
@@ -83,6 +84,8 @@ private:
 
         sf::View view(sf::FloatRect({ 0, 0 }, { static_cast<float>(width), static_cast<float>(height) }));
         window.setView(view);
+
+        currentPlayer = playerO; // Set currentPlayer after creating player objects
     }
 
     void handleEvents(sf::Event& event) {
@@ -132,7 +135,7 @@ private:
 
         uiuxGame.setInformText("Now is " + currentPlayer->getName() + "'s turn");
 
-        if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, *currentPlayer, isWin)) {
+        if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, isWin)) {
             changePlayer();
             timer.restartTimer();
         }
@@ -155,24 +158,24 @@ private:
             uiuxBegin.box.draw(window);
         }
         else {
-            uiuxGame.drawAllMoves(playerO);
-            uiuxGame.drawAllMoves(playerX);
+            uiuxGame.drawAllMoves(*playerO);
+            uiuxGame.drawAllMoves(*playerX);
         }
         if (isWin == 1) {
             std::vector<std::pair<int, int>> winningLine = referee.getWinningLine();
             if (!winningLine.empty()) {
-                sf::VertexArray line(sf::PrimitiveType::LineStrip, winningLine.size()); // Sử dụng LineStrip
+                sf::VertexArray line(sf::PrimitiveType::LineStrip, winningLine.size());
                 for (size_t i = 0; i < winningLine.size(); ++i) {
                     int x = winningLine[i].first * board.getCellSize() + board.getCellSize() / 2;
                     int y = winningLine[i].second * board.getCellSize() + board.getCellSize() / 2 + 2;
                     line[i].position = sf::Vector2f(x, y);
-                    line[i].color = sf::Color::Red; // Màu đường chiến thắng
+                    line[i].color = sf::Color::Red;
                 }
                 window.draw(line);
             }
         }
 
-        uiuxGame.drawTimer(timer.getRemainingTime(), timer.getState()); // Vẽ timer
+        uiuxGame.drawTimer(timer.getRemainingTime(), timer.getState());
 
         window.display();
     }
@@ -180,9 +183,9 @@ private:
 public:
     GameManager() :
         board(n, m, cellSize),
-        playerO('O'),
-        playerX('X'),
-        currentPlayer(&playerO),
+        playerO(nullptr),
+        playerX(nullptr),
+        currentPlayer(nullptr),
         height(board.getN()* board.getCellSize() + addSpace),
         width(board.getM()* board.getCellSize()),
         window(sf::VideoMode({ width, height }), "Caro Board Game"),
@@ -190,12 +193,16 @@ public:
         uiuxGame(cellSize, &window),
         referee(&isWin),
         timer()
-    {
+    {}
+
+    ~GameManager() {
+        delete playerO;
+        delete playerX;
     }
 
     void run() {
         sf::Clock clock;
-        sf::Time timePerFrame = sf::seconds(1.0f / 60.0f); // 60 FPS
+        sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
         while (window.isOpen()) {
             sf::Time elapsed = clock.restart();

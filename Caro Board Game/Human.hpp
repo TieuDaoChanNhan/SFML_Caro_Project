@@ -1,4 +1,5 @@
-﻿#ifndef HUMAN_HPP
+﻿// HUMAN_HPP
+#ifndef HUMAN_HPP
 #define HUMAN_HPP
 
 #include "Player.hpp"
@@ -19,14 +20,14 @@ public:
     Human(char symbol) : Player(symbol) {}
 
     // --- Game Logic Functions ---
-    bool decideMove(sf::RenderWindow& window, sf::Event& event, Board& board, Referee& referee, int isWin) {
+    bool decideMove(sf::RenderWindow& window, sf::Event& event, Board& board, Referee& referee, int& isWin) override {
         if (const auto* mouseButtonPressed = event.getIf<sf::Event::MouseButtonPressed>()) {
             if (mouseButtonPressed->button == sf::Mouse::Button::Left && isWin == -1) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 int x = mousePos.x / board.getCellSize();
                 int y = mousePos.y / board.getCellSize();
 
-                if (board.getCell(x, y) == ' ') {
+                if (board.isInside(x, y) && board.getCell(x, y) == ' ') {
                     board.setCell(x, y, getSymbol());
                     addMove(x, y);
                     referee.checkWin(board);

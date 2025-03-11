@@ -6,6 +6,7 @@
 - Thêm phần hiển thị lượt người chơi và thông báo thắng hòa thua
 - Cải thiện UIUX, làm game mượt và đẹp hơn
 - Đổi fps của game thành 60 fps, đảm bảo mượt mà và ổn định bộ đếm thời gian
+- Class Human và Bot thừa hưởng từ class Abstract Human
 
 ### Incoming
 - Thuật toán Minimax của bot ở cấp độ cao hơn
