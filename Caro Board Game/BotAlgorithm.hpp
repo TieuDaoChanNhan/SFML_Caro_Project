@@ -11,15 +11,23 @@ private:
 	int x = -1, y = -1; // vị trí được chọn sau khi sử dụng thuật toán
 	int cnt = 0;
 	set<string> st;
+
 	int dfs(Board& board, Referee& referee, int depth, char currentSymbol) {
 		cnt++;
 		int judge = referee.evaluateGameState(board);
+		/*for (int i = 0; i < board.getN(); i++) {
+			for (int j = 0; j < board.getM(); j++) {
+				cout << board.getCell(i, j);
+			}
+			cout << "\n";
+		}
+		cout << judge << "\n";*/
 		if (judge == 0) return 0;
 		else
 			if (judge == 1)
-				if (depth % 2 == 0) return 1;
+				if (depth % 2 == 1) return 1;
 				else return -1;
-		if (depth == 6) return 0;
+		if (depth == 4) return 0;
 		char nextSymbol;
 		if (currentSymbol == 'X') nextSymbol = 'O';
 		else nextSymbol = 'X';
@@ -29,6 +37,7 @@ private:
 		//int cntMove = 0;
 		for (int i = 0; i < board.getN(); i++)
 			for (int j = 0; j < board.getM(); j++) {
+				//cout << depth << ": " << i << " " << j << " " << board.getCell(i, j) << "\n";
 				if (board.getCell(i, j) != ' ') continue;
 				//cntMove++;
 				board.setCell(i, j, currentSymbol);
@@ -38,19 +47,26 @@ private:
 					int returnPoint = dfs(board, referee, depth + 1, nextSymbol);
 					if (depth % 2 == 0 && point < returnPoint) px = i, py = j, point = returnPoint;
 					if (depth % 2 == 1 && point > returnPoint) px = i, py = j, point = returnPoint;
+					//cout << depth << ": " << i << " " << j << " " << depth << " " << point << " " << returnPoint << " " << px << " " << py << "\n";
 				}
 				board.setCell(i, j, ' ');
 			}
-		//cout << "Move: " << cntMove << "\n";
 		if (depth == 0) x = px, y = py;
-		return 0;
+		//cout << "Move: " << point << "\n";
+		if (point == INT_MAX || point == INT_MIN) return 0;
+		else return point;
+	}
+	void reset() {
+		cnt = 0;
+		st.clear();
+		x = -1; y = -1;
 	}
 public:
-	pair<int, int> findMove(Board& board, Referee& referee, char currentSymbol) {
-		cnt = 0;
-		dfs(board, referee, 0, currentSymbol);
+	pair<int, int> findMove(Board board, Referee& referee, char currentSymbol) {
+		reset();
+		int point = dfs(board, referee, 0, currentSymbol);
+		//cout << "Point: " << point << "\n";
 		//cout << "Count: " << cnt << "\n";
-		st.clear();
 		return make_pair(x, y);
 	}
 };

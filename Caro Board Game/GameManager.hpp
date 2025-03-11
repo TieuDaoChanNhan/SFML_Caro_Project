@@ -193,7 +193,19 @@ public:
         uiuxGame(cellSize, &window),
         referee(&isWin),
         timer()
-    {}
+    {
+        /*string s1 = "player", s2 = "bot", s3 = "hieu", s4 = "hung", s5 = "4", s6 = "4";
+        inputData.push_back(s1);
+        inputData.push_back(s2);
+        inputData.push_back(s3);
+        inputData.push_back(s4);
+        inputData.push_back(s5);
+        inputData.push_back(s6);
+        isDoneInput = true;
+        changeWindow();
+        timer.setTimelimit(sf::seconds(30.f));
+        timer.restartTimer();*/
+    }
 
     ~GameManager() {
         delete playerO;

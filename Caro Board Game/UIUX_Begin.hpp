@@ -67,7 +67,7 @@ public:
         }
 
         if (box.isPressedEnter(event)) {
-            cout << "x: " << tmp << " " << box.getContent() << "\n";
+            //cout << "x: " << tmp << " " << box.getContent() << "\n";
             input->push_back(box.getContent());
             box.reset(""); // Reset textbox để nhập tiếp
             std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Thêm độ trễ 100ms

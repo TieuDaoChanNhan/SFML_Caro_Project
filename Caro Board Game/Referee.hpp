@@ -38,7 +38,7 @@ private:
             winningLine.push_back(make_pair(xCrr, yCrr)); // Thêm ô vào đường chiến thắng
         }
 
-        if (cnt >= 3) { // Số ô liên tiếp để thắng
+        if (cnt >= 4) { // Số ô liên tiếp để thắng
             return true;
         }
         return false;
