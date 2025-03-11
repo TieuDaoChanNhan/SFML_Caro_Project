@@ -14,8 +14,8 @@ This project is developed using **C++** with graphical rendering provided by the
 
 - **Version 2.0 (Completed)**:
   - Added Player vs AI mode.
-  - Implemented the **Minimax** algorithm with a search depth of **6**.
-  - Effective AI gameplay on a **4x4** board.
+  - Implemented the **Minimax** algorithm with a search depth of **7**.
+  - Effective AI gameplay on a **5x5** board.
 
 ## Technologies Used
 

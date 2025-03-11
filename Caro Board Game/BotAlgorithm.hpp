@@ -11,6 +11,16 @@ private:
 	int x = -1, y = -1; // vị trí được chọn sau khi sử dụng thuật toán
 	int cnt = 0;
 	set<string> st;
+	int hx[4] = { 0,1,0,-1 }, hy[4] = { 1,0,-1,0 };
+
+	bool checkNeed(Board& board, int x, int y) {
+		for (int i = 0; i < 4; i++) {
+			int nx = x + hx[i], ny = y + hy[i];
+			if (!board.isInside(nx, ny)) continue;
+			if (board.getCell(nx, ny) != ' ') return true;
+		}
+		return false;
+	}
 
 	int dfs(Board& board, Referee& referee, int depth, char currentSymbol) {
 		cnt++;
@@ -27,7 +37,7 @@ private:
 			if (judge == 1)
 				if (depth % 2 == 1) return 1;
 				else return -1;
-		if (depth == 4) return 0;
+		if (depth == 7) return 0;
 		char nextSymbol;
 		if (currentSymbol == 'X') nextSymbol = 'O';
 		else nextSymbol = 'X';
@@ -39,6 +49,7 @@ private:
 			for (int j = 0; j < board.getM(); j++) {
 				//cout << depth << ": " << i << " " << j << " " << board.getCell(i, j) << "\n";
 				if (board.getCell(i, j) != ' ') continue;
+				if (!checkNeed(board, i, j)) continue;
 				//cntMove++;
 				board.setCell(i, j, currentSymbol);
 				string state = board.getBoardState();
