@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.2] - 2023-03-12
+### Added
+- Tổ chức lại code và merge UIUX_Game, UIUX_Begin và UIUX
+
 ## [2.0.1] - 2023-03-09
 ### Added
 - Thêm tính năng dừng thời gian

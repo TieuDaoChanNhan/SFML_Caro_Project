@@ -6,8 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "Board.hpp"
 #include "Referee.hpp"
-#include "UIUX_Begin.hpp"
-#include "UIUX_Game.hpp"
+#include "UIUX.hpp"
 #include "Timer.hpp"
 #include "Human.hpp"
 #include "Bot.hpp"
@@ -28,8 +27,7 @@ private:
     unsigned int height;
     unsigned int width;
     sf::RenderWindow window;
-    UIUX_Begin uiuxBegin;
-    UIUX_Game uiuxGame;
+    UIUX uiux;
     Referee referee;
     std::vector<std::string> inputData;
     Timer timer;
@@ -80,7 +78,7 @@ private:
 
         window.setPosition(sf::Vector2i(posX, posY));
 
-        uiuxGame.setCellSize(board.getCellSize());
+        uiux.setCellSize(board.getCellSize());
 
         sf::View view(sf::FloatRect({ 0, 0 }, { static_cast<float>(width), static_cast<float>(height) }));
         window.setView(view);
@@ -93,37 +91,37 @@ private:
             window.close();
         }
 
-        if (uiuxGame.isTimerClicked(window, event)) {
+        if (uiux.isTimerClicked(window, event)) {
             timer.changeState();
             return;
         }
 
-        if (uiuxGame.isUndoButtonClicked(window, event)) {
+        if (isWin == -1 && uiux.isUndoButtonClicked(window, event)) {
             changePlayer();
             currentPlayer->removeLastMove(board);
             timer.restartTimer();
             return;
         }
 
-        if (uiuxGame.isNewButtonClicked(window, event)) {
+        if (uiux.isNewButtonClicked(window, event)) {
             reset();
             return;
         }
 
-        if (uiuxGame.isExitButtonClicked(window, event)) {
+        if (uiux.isExitButtonClicked(window, event)) {
             window.close();
             return;
         }
 
-        if (uiuxGame.isResetButtonClicked(window, event)) {
+        if (uiux.isResetButtonClicked(window, event)) {
             reset();
             inputData.clear();
-            uiuxBegin.resetIndex();
+            uiux.resetIndex();
             return;
         }
 
         if (inputData.size() < 6) {
-            uiuxBegin.inputBox(&inputData, event);
+            uiux.inputBox(&inputData, event);
             if (inputData.size() == 6) {
                 isDoneInput = true;
                 changeWindow();
@@ -133,7 +131,7 @@ private:
             return;
         }
 
-        uiuxGame.setInformText("Now is " + currentPlayer->getName() + "'s turn");
+        uiux.setInformText("Now is " + currentPlayer->getName() + "'s turn");
 
         if (isWin == -1 && currentPlayer->decideMove(window, event, board, referee, isWin)) {
             changePlayer();
@@ -142,24 +140,24 @@ private:
 
         if (isWin != -1) {
             timer.setTimelimit(sf::seconds(0.f));
-            if (isWin == 1) uiuxGame.setInformText("Congratulation, " + currentPlayer->getName() + " wins!");
-            else uiuxGame.setInformText("This game is draw!");
+            if (isWin == 1) uiux.setInformText("Congratulation, " + currentPlayer->getName() + " wins!");
+            else uiux.setInformText("This game is draw!");
         }
     }
 
     void render() {
-        uiuxGame.setHoover(isDoneInput && (isWin == -1));
+        uiux.setHoover(isDoneInput && (isWin == -1));
         window.clear(sf::Color::White);
-        uiuxGame.drawBoard(board.getN(), board.getM());
-        uiuxGame.drawButtons();
-        uiuxGame.drawInform();
+        uiux.drawBoard(board.getN(), board.getM());
+        uiux.drawButtons();
+        uiux.drawInform();
 
         if (inputData.size() < 6) {
-            uiuxBegin.box.draw(window);
+            uiux.box.draw(window);
         }
         else {
-            uiuxGame.drawAllMoves(*playerO);
-            uiuxGame.drawAllMoves(*playerX);
+            uiux.drawAllMoves(*playerO);
+            uiux.drawAllMoves(*playerX);
         }
         if (isWin == 1) {
             std::vector<std::pair<int, int>> winningLine = referee.getWinningLine();
@@ -175,7 +173,7 @@ private:
             }
         }
 
-        uiuxGame.drawTimer(timer.getRemainingTime(), timer.getState());
+        uiux.drawTimer(timer.getRemainingTime(), timer.getState());
 
         window.display();
     }
@@ -189,8 +187,7 @@ public:
         height(board.getN()* board.getCellSize() + addSpace),
         width(board.getM()* board.getCellSize()),
         window(sf::VideoMode({ width, height }), "Caro Board Game"),
-        uiuxBegin(cellSize, &window),
-        uiuxGame(cellSize, &window),
+        uiux(cellSize, &window),
         referee(&isWin),
         timer()
     {

@@ -13,21 +13,21 @@ using namespace std;
 
 class TextBox {
 private:
-    sf::Text text;
-    sf::RectangleShape box;
-    std::string content = "";
-    bool selected;
-    sf::Text headerText;
-    sf::RectangleShape topBar;
-    sf::VertexArray underline;
-    sf::Color defaultBoxColor;
-    sf::Color hoverBoxColor;
-    sf::Color selectedUnderlineColor;
-    sf::Color defaultUnderlineColor;
+    sf::Text text; // Text inside the textbox
+    sf::RectangleShape box; // Background box of the textbox
+    std::string content = ""; // Content of the textbox
+    bool selected; // Indicates if the textbox is selected
+    sf::Text headerText; // Header text of the textbox
+    sf::RectangleShape topBar; // Top bar of the textbox
+    sf::VertexArray underline; // Underline of the textbox
+    sf::Color defaultBoxColor; // Default color of the box
+    sf::Color hoverBoxColor; // Hover color of the box
+    sf::Color selectedUnderlineColor; // Color of underline when selected
+    sf::Color defaultUnderlineColor; // Default color of underline
 
 public:
     TextBox(sf::Font& font, sf::RenderWindow* window, const std::string& header)
-        : selected(true), text(font), headerText(font), // Auto select khi tạo
+        : selected(true), text(font), headerText(font), // Auto select when created
         defaultBoxColor(sf::Color(50, 150, 250)),
         hoverBoxColor(sf::Color(70, 170, 255)),
         selectedUnderlineColor(sf::Color::Yellow),
@@ -62,7 +62,7 @@ public:
     }
 
     void draw(sf::RenderWindow& window) {
-        // Hover effect chỉ khi chuột di qua
+        // Hover effect only when mouse is over
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         sf::Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
         if (box.getGlobalBounds().contains(mousePosFloat)) {
@@ -78,13 +78,13 @@ public:
         text.setPosition({ box.getPosition().x + (box.getSize().x - text.getLocalBounds().size.x) / 2, box.getPosition().y + (box.getSize().y - text.getLocalBounds().size.y) * 2 / 3 });
         window.draw(text);
 
-        // Vẽ gạch chân, đổi màu khi select.
+        // Draw underline, change color when selected.
         sf::Color underlinecolor = selected ? selectedUnderlineColor : defaultUnderlineColor;
         underline[0].color = underlinecolor;
         underline[1].color = underlinecolor;
         window.draw(underline);
 
-        // Vẽ thanh bên trên textbox
+        // Draw top bar of textbox
         topBar.setPosition({ box.getPosition().x, box.getPosition().y - 5 });
         window.draw(topBar);
     }
@@ -105,7 +105,7 @@ public:
     }
 
     void setSelected(sf::Event& event, sf::RenderWindow* window) {
-        // Loại bỏ việc chọn bằng click chuột
+        // Remove selection by mouse click
     }
 
     bool isSelected() const {
