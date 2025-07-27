@@ -2,54 +2,54 @@
 
 ## [2.0.2] - 2023-03-12
 ### Added
-- Tổ chức lại code và merge UIUX_Game, UIUX_Begin và UIUX
+- Reorganize the code and merge UIUX_Game, UIUX_Begin and UIUX
 
 ## [2.0.1] - 2023-03-09
 ### Added
-- Thêm tính năng dừng thời gian
-- Thêm phần hiển thị lượt người chơi và thông báo thắng hòa thua
-- Cải thiện UIUX, làm game mượt và đẹp hơn
-- Đổi fps của game thành 60 fps, đảm bảo mượt mà và ổn định bộ đếm thời gian
-- Class Human và Bot thừa hưởng từ class Abstract Player
+- Add time stop feature
+- Add player count display and win-draw-lose notification
+- Improve UIUX, make the game smoother and more beautiful
+- Change the game fps to 60 fps, ensure smooth and stable timer
+- Human and Bot classes inherit from Abstract Player class
 
 ### Incoming
-- Thuật toán Minimax của bot ở cấp độ cao hơn
+- Minimax algorithm of bots at higher level
 
 ## [2.0.0] - 2023-03-09
 ### Added
-- Thêm tính năng đường chéo thể hiện ô chiến thắng
-- Thêm tính năng chọn bot cho O hoặc X và bot chạy ổn định ở caro 3x3
+- Add diagonal feature to show winning squares
+- Add bot selection feature for O or X and bot runs stably on caro 3x3
 
 ## [1.0.1] - 2023-03-05
 ### Added
-- Thêm tính năng undo, new game, exit
-- Thêm tính năng bot tự đánh (độ phức tạp cao, đang sửa)
+- Added undo, new game, exit features
+- Added auto-play bot feature (high complexity, under repair)
 
 ## [1.0.0] - 2023-03-05
 ### Added
-- Hoàn thiện tất cả các tính năng của version 1
+- Completed all features of version 1
 
 ### Incoming
-- Version 2 và cải tiến đồ họa, tính năng game
+- Version 2 and improved graphics, game features
 
 ## [0.2.0] - 2023-03-02
 ### Added
-- Thêm thông báo chiến thắng khi có người thắng.
-- Thêm tính năng làm mới bàn cờ (clear board) sau khi kết thúc trò chơi.
-  
+- Added victory notification when someone wins.
+- Added clear board feature after the game ends.
+
 ### Fixed
-- Sửa một số lỗi nhỏ về giao diện và xử lý sự kiện chuột.
-- Organize lại code theo Class, Object để chương trình chạy mượt mà hơn.
+- Fixed some minor errors in interface and mouse event handling.
+- Reorganized code by Class, Object to make the program run smoother.
 
 ## [0.1.0] - 2023-02-27
 ### Added
-- Cài đặt và bắt đầu phát triển dự án Cờ Caro với các tính năng chính.
-- Tích hợp thư viện **SFML** để vẽ bàn cờ và xử lý sự kiện chuột.
+- Install and start developing the Caro project with the main features.
+- Integrate the **SFML** library to draw the board and handle mouse events.
 
 ### Not yet implemented
-- Chưa có tính năng nhập kích thước bàn cờ `n` và `m` từ người chơi.
-- Chưa có thông báo chiến thắng khi người chơi thắng.
+- There is no feature to input the board size `n` and `m` from the player.
+- There is no victory notification when the player wins.
 
 ## [0.0.1] - 2023-02-25
 ### Added
-- Bắt đầu học về **OOP trong C++** và **SFML** cho việc phát triển dự án Cờ Caro.
+- Start learning about **OOP in C++** and **SFML** for developing the Caro project.

@@ -27,7 +27,11 @@ This project is developed using **C++** with graphical rendering provided by the
 
 ### Prerequisites
 - **C++** compiler (g++, Clang, or MSVC)
-- **SFML** library ([SFML installation guide](https://www.sfml-dev.org/download.php))
+- **SFML** library ([SFML installation guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/visual-studio/))
+
+### Played Game
+- Access x64/Release folder
+- 
 
 ### Project Setup
 
@@ -38,18 +42,16 @@ cd SFML_Caro_Project
 ```
 
 Compile and run the program:
-```bash
-g++ *.cpp -o CaroGame -lsfml-graphics -lsfml-window -lsfml-system
-./CaroGame
-```
+- Setup SFML like the ([SFML installation guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/visual-studio/))
+- Build release the game
+- Open file **Caro Board Game.exe** to play the game
 
 ## Future Development
 
 - Extend AI algorithm for larger board sizes.
 - Optimize performance and enhance user experience.
-- Additional features such as game timer, undo moves, and main menu.
+- Additional features such as main menu, online pvp, ranking, game analysis.
 
 ---
 
 Thank you for your interest in this project! Enjoy playing the game.
-
