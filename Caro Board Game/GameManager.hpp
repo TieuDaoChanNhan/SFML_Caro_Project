@@ -210,6 +210,10 @@ public:
     }
 
     void run() {
+        sf::Image icon;
+        icon.loadFromFile("logo.png"); // File/Image/Pixel
+        window.setIcon(icon);
+
         sf::Clock clock;
         sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 

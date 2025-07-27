@@ -43,7 +43,7 @@ private:
     bool isHoover;
 public:
     bool loadFont() {
-        if (!font.openFromFile("./arial.ttf")) {
+        if (!font.openFromFile("arial.ttf")) {
             cout << "Error Loading Font" << "\n";
             return false;
         }
