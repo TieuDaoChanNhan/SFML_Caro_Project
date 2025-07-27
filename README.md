@@ -1,57 +1,102 @@
-# Caro Game
+# 🎮 Caro Game
 
-Caro is a popular traditional board game where two players alternate marking X and O on the board. The objective is to form a sequence of 5 consecutive symbols horizontally, vertically, or diagonally.
+<div align="center">
 
-This project is developed using **C++** with graphical rendering provided by the **SFML** library. It supports both Player vs Player (PvP) and Player vs AI game modes.
 
-## Current Versions
 
-- **Version 1.0 (Completed)**:
-  - Player vs Player mode.
-  - Customizable board size (n x m).
-  - Mouse click event handling to place O/X.
-  - Victory condition checking (5 consecutive cells).
 
-- **Version 2.0 (Completed)**:
-  - Added Player vs AI mode.
-  - Implemented the **Minimax** algorithm with a search depth of **7**.
-  - Effective AI gameplay on a **5x5** board.
+*A modern implementation of the classic Tic-Tac-Toe variant*
 
-## Technologies Used
+</div>
 
-- Programming language: **C++**
-- Graphics library: **SFML**
-- Version control: **Git & GitHub**
+## 📖 About
 
-## Installation and Execution
+Caro (also known as Gomoku) is a popular traditional board game where two players alternate marking **X** and **O** on the board. The objective is to form a sequence of **5 consecutive symbols** horizontally, vertically, or diagonally.
 
-### Prerequisites
-- **C++** compiler (g++, Clang, or MSVC)
-- **SFML** library ([SFML installation guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/visual-studio/))
+This project brings the classic game to life using **C++** with stunning graphical rendering powered by the **SFML** library. Experience both Player vs Player (PvP) and challenging Player vs AI game modes!
 
-### Played Game
-- Access x64/Release folder
-- 
+## ✨ Features
 
-### Project Setup
+### 🎯 Version 1.0 (Completed)
 
-Clone the repository from GitHub:
+- 👥 **Player vs Player mode**
+- 📏 **Customizable board size** (n × m)
+- 🖱️ **Intuitive mouse controls** for placing X/O
+- 🏆 **Smart victory detection** (5 consecutive cells)
+
+
+### 🤖 Version 2.0 (Completed)
+
+- 🧠 **Player vs AI mode** with intelligent gameplay
+- ⚡ **Minimax algorithm** implementation (depth: 7)
+- 🎲 **Optimized AI performance** on 5×5 boards
+- 🎨 **Enhanced user interface**
+
+
+## 🛠️ Technologies
+
+| Component | Technology |
+| :-- | :-- |
+| **Language** | C++ |
+| **Graphics** | SFML Library |
+| **AI Algorithm** | Minimax with Alpha-Beta Pruning |
+| **Version Control** | Git \& GitHub |
+
+## 🚀 Quick Start
+
+### 📋 Prerequisites
+
+- **C++ Compiler** (g++, Clang, or MSVC)
+- **SFML Library** - [Installation Guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/visual-studio/)
+
+
+### 🎮 Play Now (Windows)
+
+1. Navigate to the `x64/Release` folder
+2. Run `Caro Board Game.exe`
+3. Enjoy the game! 🎉
+
+### 🔧 Development Setup
+
 ```bash
+# Clone the repository
 git clone https://github.com/TieuDaoChanNhan/SFML_Caro_Project.git
 cd SFML_Caro_Project
+
+# Setup SFML following the installation guide
+# Build the project in Release mode
+# Run the executable
 ```
 
-Compile and run the program:
-- Setup SFML like the ([SFML installation guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/visual-studio/))
-- Build release the game
-- Open file **Caro Board Game.exe** to play the game
 
-## Future Development
+## 🎯 Game Modes
 
-- Extend AI algorithm for larger board sizes.
-- Optimize performance and enhance user experience.
-- Additional features such as main menu, online pvp, ranking, game analysis.
+| Mode | Description | Board Size | Difficulty |
+| :-- | :-- | :-- | :-- |
+| **PvP** | Human vs Human | Customizable | - |
+| **PvAI** | Human vs Computer | 5×5 | Intelligent |
 
----
+## 🔮 Future Roadmap
 
-Thank you for your interest in this project! Enjoy playing the game.
+- 🧩 **Extended AI** for larger board sizes
+- ⚡ **Performance optimizations**
+- 🎨 **Enhanced graphics and animations**
+- 🏠 **Main menu system**
+- 🌐 **Online multiplayer**
+- 📊 **Player rankings and statistics**
+- 📈 **Game analysis tools**
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+
+- 🐛 Report bugs
+- 💡 Suggest features
+- 🔧 Submit pull requests
+
+<div align="center">
+
+**🎮 Thank you for your interest in this project! Enjoy playing! 🎮**
+
+Made with ❤️ using C++ and SFML
