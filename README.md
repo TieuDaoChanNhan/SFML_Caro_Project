@@ -14,8 +14,9 @@ This project brings the classic game to life using **C++** with stunning graphic
 
 ## 🎯 Class Diagram
 
-<div align="center">
+<div align="center"> 
 
+<img src="External/assets/DiagramClass.png" alt="Class Diagram" width="800">
 
 *System architecture and class relationships*
 
