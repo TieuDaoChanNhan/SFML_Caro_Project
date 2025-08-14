@@ -2,9 +2,6 @@
 
 <div align="center">
 
-
-
-
 *A modern implementation of the classic Tic-Tac-Toe variant*
 
 </div>
@@ -14,6 +11,21 @@
 Caro (also known as Gomoku) is a popular traditional board game where two players alternate marking **X** and **O** on the board. The objective is to form a sequence of **5 consecutive symbols** horizontally, vertically, or diagonally.
 
 This project brings the classic game to life using **C++** with stunning graphical rendering powered by the **SFML** library. Experience both Player vs Player (PvP) and challenging Player vs AI game modes!
+
+## 🎯 Class Diagram
+
+<div align="center">
+
+
+*System architecture and class relationships*
+
+</div>
+
+## 📊 Project Presentation
+
+🎨 **[View Project Presentation](https://www.canva.com/design/DAGhyqHBpHo/0OGSWTJULBwsyWQH3CCXGA/edit?utm_content=DAGhyqHBpHo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)**
+
+*Comprehensive overview of the project's development, features, and technical implementation*
 
 ## ✨ Features
 
@@ -60,12 +72,14 @@ This project brings the classic game to life using **C++** with stunning graphic
 
 ```bash
 # Clone the repository
-git clone https://github.com/TieuDaoChanNhan/SFML_Caro_Project.git
-cd SFML_Caro_Project
+git clone <repository-url>
+cd caro-game
 
-# Setup SFML following the installation guide
-# Build the project in Release mode
-# Run the executable
+# Build the project
+# (Add your specific build instructions here)
+
+# Run the game
+./caro-game
 ```
 
 
@@ -75,6 +89,13 @@ cd SFML_Caro_Project
 | :-- | :-- | :-- | :-- |
 | **PvP** | Human vs Human | Customizable | - |
 | **PvAI** | Human vs Computer | 5×5 | Intelligent |
+
+## 🎮 How to Play
+
+1. **Choose your game mode**: PvP or PvAI
+2. **Select board size** (for PvP mode)
+3. **Take turns** placing X and O symbols
+4. **Win condition**: First player to get 5 consecutive symbols wins!
 
 ## 🔮 Future Roadmap
 
@@ -95,8 +116,25 @@ Contributions are welcome! Feel free to:
 - 💡 Suggest features
 - 🔧 Submit pull requests
 
+
+### Development Guidelines
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a pull request
+
+## 📧 Contact
+
+For questions or suggestions, please feel free to reach out!
+
+***
+
 <div align="center">
 
 **🎮 Thank you for your interest in this project! Enjoy playing! 🎮**
 
 Made with ❤️ using C++ and SFML
+
+</div>
