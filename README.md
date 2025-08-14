@@ -79,7 +79,7 @@ cd caro-game
 # (Add your specific build instructions here)
 
 # Run the game
-./caro-game
+find exe file in x64 release and run
 ```
 
 
